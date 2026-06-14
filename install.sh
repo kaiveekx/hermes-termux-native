@@ -279,21 +279,8 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   readtty TG_USER_ID
 
   # Write tokens to .env
-  python3 << PYEOF
-import os
-
-env_path = os.path.expanduser('~/.hermes/.env')
-with open(env_path, 'r') as f:
-    content = f.read()
-
-content = content.replace('# TELEGRAM_BOT_TOKEN=        # from @BotFather',
-                          'TELEGRAM_BOT_TOKEN=${BOT_TOKEN}')
-content = content.replace('# TELEGRAM_ALLOWED_USERS=your_numeric_telegram_id',
-                          'TELEGRAM_ALLOWED_USERS=${TG_USER_ID}')
-with open(env_path, 'w') as f:
-    f.write(content)
-print("saved")
-PYEOF
+  echo "TELEGRAM_BOT_TOKEN=$BOT_TOKEN" >> "$HOME/.hermes/.env"
+  echo "TELEGRAM_ALLOWED_USERS=$TG_USER_ID" >> "$HOME/.hermes/.env"
 
   ok "Bot token and User ID saved"
 
@@ -306,9 +293,15 @@ PYEOF
   echo -e "  (View logs anytime: ${W}tmux attach -t hermes-pairing${DIM})${NC}"
   echo ""
 
-  tmux new-session -d -s hermes-pairing "hermes gateway" 2>/dev/null || true
-  sleep 4
-  ok "Gateway started (tmux: hermes-pairing)"
+  if tmux has-session -t hermes-pairing 2>/dev/null; then
+    warn "Gateway session already running — reusing existing session"
+  elif tmux has-session -t hermes 2>/dev/null; then
+    warn "Existing hermes tmux session found — gateway may already be running"
+  else
+    tmux new-session -d -s hermes-pairing "$HOME/hermes-native/venv/bin/hermes gateway" 2>/dev/null || true
+    sleep 4
+    ok "Gateway started (tmux: hermes-pairing)"
+  fi
 
   echo ""
   echo -e "${W}  Now open Telegram and message your bot.${NC}"
