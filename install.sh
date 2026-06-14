@@ -281,6 +281,7 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   # Write tokens to .env
   echo "TELEGRAM_BOT_TOKEN=$BOT_TOKEN" >> "$HOME/.hermes/.env"
   echo "TELEGRAM_ALLOWED_USERS=$TG_USER_ID" >> "$HOME/.hermes/.env"
+  echo "GATEWAY_ALLOW_ALL_USERS=true" >> "$HOME/.hermes/.env"
 
   ok "Bot token and User ID saved"
 
@@ -330,6 +331,15 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   step "Stopping temporary gateway..."
   tmux kill-session -t hermes-pairing 2>/dev/null || true
   ok "Gateway stopped"
+  step "Securing gateway — removing open access..."
+  python3 -c "
+import os
+path = os.path.expanduser('~/.hermes/.env')
+with open(path) as f: c = f.read()
+c = c.replace('GATEWAY_ALLOW_ALL_USERS=true\n', '')
+with open(path, 'w') as f: f.write(c)
+"
+  ok "Gateway secured — only your user ID can access the bot"
 
   echo ""
   echo -e "${G}${BOLD}  ✅ Telegram is ready!${NC}"
