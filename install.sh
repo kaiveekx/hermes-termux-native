@@ -7,9 +7,6 @@
 
 set -e
 
-# Reopen stdin from TTY (needed when piped via curl | bash)
-exec < /dev/tty
-
 # ── Colors ───────────────────────────────────────────────────────
 R='\033[0;31m'
 G='\033[0;32m'
@@ -37,6 +34,7 @@ warn()  { echo -e "${Y}  ⚠  $1${NC}"; }
 err()   { echo -e "${R}  ✗  $1${NC}"; }
 info()  { echo -e "${DIM}     $1${NC}"; }
 ask()   { echo -e "${M}  ?  ${BOLD}$1${NC}"; echo -ne "${M}  ❯  ${NC}"; }
+readtty() { read "$@" < /dev/tty; }
 divider() { echo -e "${DIM}     ────────────────────────────────────────────${NC}"; }
 
 # ── Header ───────────────────────────────────────────────────────
@@ -56,7 +54,7 @@ echo -e "  Pre-built ARM64 wheels skip all Rust/C compilation."
 echo -e "  Estimated time: 5–10 minutes${NC}"
 echo ""
 echo -ne "${Y}  Press ENTER to begin installation...${NC}"
-read
+readtty DUMMY
 
 # ── Step 1: Environment Check ────────────────────────────────────
 banner "Step 1 of 8 — Checking Environment"
@@ -107,7 +105,7 @@ VENV_DIR="$INSTALL_DIR/venv"
 if [ -d "$INSTALL_DIR" ]; then
   warn "Directory $INSTALL_DIR already exists."
   ask "Remove and reinstall? (y/n)"
-  read CONFIRM
+  readtty CONFIRM
   if [ "$CONFIRM" = "y" ] || [ "$CONFIRM" = "Y" ]; then
     rm -rf "$INSTALL_DIR"
     ok "Removed existing installation"
@@ -253,7 +251,7 @@ echo ""
 divider
 echo ""
 ask "Set up Telegram now? (y/n)"
-read SETUP_TG
+readtty SETUP_TG
 
 if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
 
@@ -268,7 +266,7 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   echo -e "     ${W}123456789:ABCDefghIJKlmnoPQRstu${NC}"
   echo ""
   ask "Paste your Bot Token and press ENTER"
-  read BOT_TOKEN
+  readtty BOT_TOKEN
 
   echo ""
   echo -e "${W}${BOLD}  📌 Step 2 — Get Your Telegram User ID${NC}"
@@ -278,7 +276,7 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   echo -e "  3. It replies with your numeric ID: ${W}123456789${NC}"
   echo ""
   ask "Paste your Telegram User ID and press ENTER"
-  read TG_USER_ID
+  readtty TG_USER_ID
 
   # Write tokens to .env
   python3 << PYEOF
@@ -326,7 +324,7 @@ PYEOF
   echo -e "${DIM}  Copy ONLY the code (e.g. ${W}9tsgdy${DIM}) — not the full message${NC}"
   echo ""
   ask "Paste your pairing code and press ENTER"
-  read PAIRING_CODE
+  readtty PAIRING_CODE
 
   echo ""
   step "Approving pairing code..."
