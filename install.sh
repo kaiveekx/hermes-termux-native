@@ -139,7 +139,7 @@ WHEELS_DIR="$HOME/.hermes-wheels"
 if [ ! -d "$WHEELS_DIR" ] || [ -z "$(ls -A $WHEELS_DIR 2>/dev/null)" ]; then
   step "Downloading pre-built ARM64 wheels..."
   mkdir -p "$WHEELS_DIR"
-  curl -fsSL https://github.com/kaiveekx/hermes-termux-native/releases/latest/download/wheels-arm64.tar.gz | tar -xz -C "$WHEELS_DIR" --strip-components=1
+  curl -L --progress-bar https://github.com/kaiveekx/hermes-termux-native/releases/latest/download/wheels-arm64.tar.gz | tar -xz -C "$WHEELS_DIR" --strip-components=1
   ok "Wheels downloaded to $WHEELS_DIR"
 else
   ok "Wheels already cached at $WHEELS_DIR"
