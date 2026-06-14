@@ -98,7 +98,6 @@ ok "System packages ready"
 # ── Step 3: Python 3.11 Venv ────────────────────────────────────
 banner "Step 3 of 8 — Setting Up Python 3.11 Environment"
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 INSTALL_DIR="$HOME/hermes-native"
 VENV_DIR="$INSTALL_DIR/venv"
 
@@ -136,7 +135,15 @@ info "These wheels were compiled on Android ARM64 —"
 info "no 30-minute Rust/C compilation needed."
 echo ""
 
-WHEELS_DIR="$SCRIPT_DIR/wheels"
+WHEELS_DIR="$HOME/.hermes-wheels"
+if [ ! -d "$WHEELS_DIR" ] || [ -z "$(ls -A $WHEELS_DIR 2>/dev/null)" ]; then
+  step "Downloading pre-built ARM64 wheels..."
+  mkdir -p "$WHEELS_DIR"
+  curl -fsSL https://github.com/kaiveekx/hermes-termux-native/releases/latest/download/wheels-arm64.tar.gz | tar -xz -C "$WHEELS_DIR" --strip-components=1
+  ok "Wheels downloaded to $WHEELS_DIR"
+else
+  ok "Wheels already cached at $WHEELS_DIR"
+fi
 
 install_wheel() {
   PKG=$1
