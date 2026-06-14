@@ -59,21 +59,21 @@ Every other Hermes Agent guide for Android uses **proot-distro** — a compatibi
 
 ## 🚀 Installation
 
-### One-liner
+### One-liner (Recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/hermes-termux-native/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/kaiveekx/hermes-termux-native/main/install.sh | bash
 ```
+
+The script automatically downloads pre-built ARM64 wheels from GitHub Releases — no Rust/C compilation needed.
 
 ### Manual
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/hermes-termux-native.git
+git clone https://github.com/kaiveekx/hermes-termux-native.git
 cd hermes-termux-native
 bash install.sh
 ```
-
-The installer will guide you through everything interactively with clear explanations at each step.
 
 ---
 
