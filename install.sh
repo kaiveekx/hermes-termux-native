@@ -294,15 +294,13 @@ if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
   echo -e "  (View logs anytime: ${W}tmux attach -t hermes-pairing${DIM})${NC}"
   echo ""
 
-  if tmux has-session -t hermes-pairing 2>/dev/null; then
-    warn "Gateway session already running — reusing existing session"
-  elif tmux has-session -t hermes 2>/dev/null; then
-    warn "Existing hermes tmux session found — gateway may already be running"
-  else
-    tmux new-session -d -s hermes-pairing "$HOME/hermes-native/venv/bin/hermes gateway" 2>/dev/null || true
-    sleep 4
-    ok "Gateway started (tmux: hermes-pairing)"
-  fi
+  # Force kill any existing gateway sessions before starting fresh
+  tmux kill-session -t hermes-pairing 2>/dev/null || true
+  tmux kill-session -t hermes 2>/dev/null || true
+  sleep 1
+  tmux new-session -d -s hermes-pairing "$HOME/hermes-native/venv/bin/hermes gateway" 2>/dev/null || true
+  sleep 4
+  ok "Gateway started (tmux: hermes-pairing)"
 
   echo ""
   echo -e "${W}  Now open Telegram and message your bot.${NC}"
