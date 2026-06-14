@@ -7,6 +7,9 @@
 
 set -e
 
+# Reopen stdin from TTY (needed when piped via curl | bash)
+exec < /dev/tty
+
 # ── Colors ───────────────────────────────────────────────────────
 R='\033[0;31m'
 G='\033[0;32m'
@@ -200,6 +203,8 @@ mkdir -p "$HOME/.hermes"
 
 step "Running initial setup..."
 hermes setup --defaults 2>/dev/null || true
+step "Migrating config to latest version..."
+hermes doctor --fix 2>/dev/null || true
 
 step "Writing .env configuration..."
 python3 << 'PYEOF'
