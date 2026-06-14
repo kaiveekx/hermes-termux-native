@@ -242,23 +242,71 @@ PYEOF
 hermes config set SEARXNG_URL https://searx.be 2>/dev/null || true
 ok "Configuration written to ~/.hermes/.env"
 
-# ── Step 7: Post-install Notes ──────────────────────────────────
-banner "Step 7 of 8 — Optional Setup"
+# ── Step 7: Telegram Setup ──────────────────────────────────────
+banner "Step 7 of 8 — Telegram Setup (Optional)"
 
-echo -e "${W}  The following tools can be configured after installation:${NC}"
+echo -e "${W}  Connect Hermes to Telegram to chat with your AI agent"
+echo -e "  from anywhere, even when Termux is in the background.${NC}"
 echo ""
-echo -e "${G}  📱 Telegram Gateway${NC}"
-echo -e "${DIM}     Chat with Hermes from anywhere via Telegram."
-echo -e "     1. Get a bot token from @BotFather on Telegram"
-echo -e "     2. Run: ${W}hermes setup gateway${NC}"
-echo -e "${DIM}     3. Start gateway: ${W}hermes gateway${NC}"
+divider
 echo ""
-echo -e "${G}  🔑 API Keys (add to ~/.hermes/.env)${NC}"
-echo -e "${DIM}     OPENROUTER_API_KEY  — Mixture of Agents (openrouter.ai free tier)"
-echo -e "     GITHUB_TOKEN        — Skills Hub (github.com settings)"
-echo -e "     GROQ_API_KEY        — Voice/STT (groq.com free tier)"
-echo -e "     TAVILY_API_KEY      — Web search (tavily.com free tier)${NC}"
-echo ""
+ask "Set up Telegram now? (y/n)"
+readtty SETUP_TG
+
+if [ "$SETUP_TG" = "y" ] || [ "$SETUP_TG" = "Y" ]; then
+
+  echo ""
+  echo -e "${W}${BOLD}  📌 Step 1 — Get Your Bot Token${NC}"
+  echo ""
+  echo -e "${DIM}  1. Open Telegram → search ${W}@BotFather${DIM}"
+  echo -e "  2. Send ${W}/newbot${DIM}"
+  echo -e "  3. Choose a name and username for your bot"
+  echo -e "  4. BotFather gives you a token like:"
+  echo -e "     ${W}123456789:ABCDefghIJKlmnoPQRstu${NC}"
+  echo ""
+  ask "Paste your Bot Token and press ENTER"
+  readtty BOT_TOKEN
+
+  echo ""
+  echo -e "${W}${BOLD}  📌 Step 2 — Get Your Telegram User ID${NC}"
+  echo ""
+  echo -e "${DIM}  1. Open Telegram → search ${W}@userinfobot${DIM}"
+  echo -e "  2. Send any message to it"
+  echo -e "  3. It replies with your numeric ID: ${W}123456789${NC}"
+  echo ""
+  ask "Paste your Telegram User ID and press ENTER"
+  readtty TG_USER_ID
+
+  # Write to .env
+  echo "TELEGRAM_BOT_TOKEN=$BOT_TOKEN" >> "$HOME/.hermes/.env"
+  echo "TELEGRAM_ALLOWED_USERS=$TG_USER_ID" >> "$HOME/.hermes/.env"
+  ok "Bot token and User ID saved to ~/.hermes/.env"
+
+  # Set required config for pairing to work
+  hermes config set telegram.require_mention false 2>/dev/null || true
+  hermes config set unauthorized_dm_behavior pair 2>/dev/null || true
+  hermes config set telegram.allowed_chats "" 2>/dev/null || true
+  ok "Telegram config set correctly"
+
+  echo ""
+  echo -e "${G}${BOLD}  ✅ Telegram configured!${NC}"
+  echo ""
+  echo -e "${W}  To complete setup and pair your account:${NC}"
+  echo ""
+  echo -e "${DIM}  1. Start the gateway:"
+  echo -e "     ${W}hermes gateway${NC}"
+  echo -e "${DIM}  2. Message your bot on Telegram"
+  echo -e "  3. Bot replies with a pairing code like: ${W}9tsgdy${NC}"
+  echo -e "${DIM}  4. Run in another Termux session:"
+  echo -e "     ${W}hermes pairing approve telegram 9tsgdy${NC}"
+  echo -e "${DIM}  5. Send another message — you're in! 🎉${NC}"
+  echo ""
+  echo -e "${DIM}  Tip: Keep gateway running in background with:"
+  echo -e "  ${W}tmux new-session -d -s hermes 'hermes gateway'${NC}"
+
+else
+  warn "Telegram skipped. Set up later with: hermes setup gateway"
+fi
 
 # ── Step 8: Final Check ──────────────────────────────────────────
 banner "Step 8 of 8 — Final Verification"
