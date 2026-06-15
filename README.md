@@ -79,19 +79,34 @@ bash install.sh
 
 ## 📱 Telegram Setup
 
-During installation, the script will:
+During installation the script will ask for your bot token and user ID, then configure everything correctly. After that, complete pairing manually:
 
-1. Ask you for your **Bot Token** (get one from [@BotFather](https://t.me/BotFather) in 30 seconds)
-2. Ask for your **Telegram User ID** (get it from [@userinfobot](https://t.me/userinfobot))
-3. Auto-start the gateway and walk you through the pairing process
-4. You just paste the pairing code — the script handles the rest
+**1. Get a bot token** — message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot` and follow the steps.
 
-After setup, start the gateway anytime with:
+**2. Get your Telegram User ID** — message [@userinfobot](https://t.me/userinfobot), it replies with your numeric ID.
+
+**3. Start the gateway** in a Termux session:
 ```bash
 hermes gateway
 # or in background:
 tmux new-session -d -s hermes 'hermes gateway'
 ```
+
+**4. Message your bot** on Telegram. It replies with:
+```
+Hi~ I don't recognize you yet!
+Here's your pairing code: 9tsgdy
+Ask the bot owner to run: hermes pairing approve telegram 9tsgdy
+```
+
+**5. Approve the pairing** in another Termux session:
+```bash
+hermes pairing approve telegram 9tsgdy
+```
+
+**6. Send another message** — you're paired and ready! 🎉
+
+> **Note:** The installer pre-configures all required settings so the pairing code flow works correctly out of the box.
 
 ---
 
