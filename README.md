@@ -8,7 +8,7 @@ No proot. No glibc. No Linux container. Pure Bionic. Pure Termux.
 [![Android](https://img.shields.io/badge/Android-7%2B-green?logo=android)](https://android.com)
 [![Termux](https://img.shields.io/badge/Termux-F--Droid-blue?logo=f-droid)](https://f-droid.org/packages/com.termux/)
 [![Architecture](https://img.shields.io/badge/arch-aarch64%20ARM64-orange)](https://github.com)
-[![Hermes](https://img.shields.io/badge/Hermes%20Agent-v0.14.0-purple)](https://github.com/NousResearch/hermes-agent)
+[![Hermes](https://img.shields.io/badge/Hermes%20Agent-v0.16.0-purple)](https://github.com/NousResearch/hermes-agent)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
 </div>
@@ -40,7 +40,7 @@ Every other Hermes Agent guide for Android uses **proot-distro** — a compatibi
 - ✅ Web search pre-configured (SearXNG public instance, free)
 - ✅ Text-to-Speech via Edge TTS (free)
 - ✅ Browser automation via agent-browser
-- ✅ Interactive Telegram onboarding with auto-pairing
+- ✅ Guided Telegram setup (token + user ID + correct config, manual pairing step)
 - ✅ Full `.env` template with all configurable options
 
 ---
@@ -193,8 +193,8 @@ hermes doctor
 ## 🔄 Updating Hermes
 
 ```bash
-cd ~/hermes-agent-native
-source venv311/bin/activate
+cd ~/hermes-native
+source venv/bin/activate
 pip install --upgrade hermes-agent --only-binary=:all:
 ```
 
@@ -214,7 +214,7 @@ Especially needed:
 ## 📜 Credits
 
 - [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) — the agent itself
-- This repo — native Android packaging, pre-built wheels, Telegram onboarding
+- This repo — native Android packaging, pre-built wheels, guided Telegram setup
 
 ---
 
